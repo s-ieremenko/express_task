@@ -1,2 +1,2 @@
 {"age":"22"}
-{"city":"kyiv"}
+{"name":"vasya"}
