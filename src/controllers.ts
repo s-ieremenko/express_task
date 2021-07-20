@@ -1,12 +1,10 @@
 import express, { Request, Response } from 'express';
 import * as fs from 'fs';
+import { enc, path } from './constants';
 
 export class Controller {
-  static path: string = './newFile.txt';
-  static enc: string = 'utf-8';
-
   static readFile(request: Request, response: Response): void {
-    fs.readFile(Controller.path, Controller.enc, (error, data) => {
+    fs.readFile(path, enc, (error, data) => {
       if (error) {
         response.status(404).send('File not found');
         return console.error(error.message);
@@ -22,7 +20,7 @@ export class Controller {
       response.status(400).send('Bad request');
     } else {
       let body: string = JSON.stringify(request.body);
-      fs.writeFile(Controller.path, (body += '\n'), (error) => {
+      fs.writeFile(path, (body += '\n'), (error) => {
         if (error) {
           return response.status(500).json({ message: 'ooops' });
         }
@@ -34,13 +32,13 @@ export class Controller {
 
   static updateFile(request: Request, response: Response): void {
     let body: string = JSON.stringify(request.body);
-    fs.access(Controller.path, fs.constants.R_OK, (error) => {
+    fs.access(path, fs.constants.R_OK, (error) => {
       if (error) {
         response.status(404).send('File not found');
         return console.error(error.message);
       }
 
-      fs.appendFile(Controller.path, (body += '\n'), (error) => {
+      fs.appendFile(path, (body += '\n'), (error) => {
         if (error) {
           response.status(500).send('Server error');
           return console.error(error.message);
@@ -51,7 +49,7 @@ export class Controller {
   }
 
   static deleteFile(request: Request, response: Response): void {
-    fs.unlink(Controller.path, (error) => {
+    fs.unlink(path, (error) => {
       if (error) {
         response.status(410).send('File does not exist');
         return console.error(error.message);
